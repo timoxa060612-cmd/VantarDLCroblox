@@ -1,0 +1,32 @@
+name: Package Python Backend
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          cd python_backend
+          pip install -r requirements.txt
+          pip install pyinstaller
+          
+      - name: Build EXE
+        run: |
+          cd python_backend
+          pyinstaller --onefile --name VestaBackend manager.py
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vesta-Python-Exe
+          path: python_backend/dist/VestaBackend.exe
+          
